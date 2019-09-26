@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -20,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     public static final String TAG = "FIREBASE";
 
-    private EditText email;
-    private EditText password;
+    private EditText email, password;
+    private Button logIn, createAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +33,24 @@ public class MainActivity extends AppCompatActivity {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
+        email = findViewById(R.id.email);
+        password = findViewById(R.id.password);
+        logIn = findViewById(R.id.login);
+        createAccount = findViewById(R.id.create);
 
+        createAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createAccount(email.getText().toString(), password.getText().toString());
+            }
+        });
+
+        logIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signIn(email.getText().toString(), password.getText().toString());
+            }
+        });
     }
 
     public void updateUI(FirebaseUser user) {
