@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "803243835817",
+    "firebase_url": "https://mdb-inventory.firebaseio.com",
+    "project_id": "mdb-inventory",
+    "storage_bucket": "mdb-inventory.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803243835817:android:1e2d0bb4e5bea944eb84b8",
+        "android_client_info": {
+          "package_name": "com.example.mdbinventory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803243835817-cc7dtjeo81g224plu5sb2gppgup7oqt1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mdbinventory",
+            "certificate_hash": "086f9ec612ab0a72873e43548b8bb4ec8978946a"
+          }
+        },
+        {
+          "client_id": "803243835817-i43n9rdajjkdf3gtcjor88jcf7c6cfum.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYXqoZoUH21Zlf5H1YBIutTV5LsJV74sA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803243835817-i43n9rdajjkdf3gtcjor88jcf7c6cfum.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
