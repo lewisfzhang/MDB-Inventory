@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
         logIn = findViewById(R.id.login);
         createAccount = findViewById(R.id.create);
 
+
+
         createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,9 +56,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateUI(FirebaseUser user) {
+        /*
         Intent intent = new Intent(this, WelcomeActivity.class);
         startActivity(intent);
+         */
     }
+
 
     @Override
     public void onStart() {
