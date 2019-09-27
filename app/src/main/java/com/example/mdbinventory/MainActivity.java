@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText email, password;
     private Button logIn, createAccount;
+
+    Intent dataIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         logIn = findViewById(R.id.login);
         createAccount = findViewById(R.id.create);
 
-
+        dataIntent = new Intent(this, DataActivity.class);
 
         createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,12 +58,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void updateUI(FirebaseUser user) {
-        /*
-        Intent intent = new Intent(this, WelcomeActivity.class);
-        startActivity(intent);
-         */
-    }
+    public void updateUI(FirebaseUser user) {}
 
 
     @Override
@@ -81,15 +79,15 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            startActivity(dataIntent);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                            FirebaseAuthException e = (FirebaseAuthException)task.getException();
+                            Toast.makeText(MainActivity.this, "Authentication failed." + e.getMessage(),
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
-
-                        // ...
                     }
                 });
     }
@@ -104,10 +102,12 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            startActivity(dataIntent);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                            FirebaseAuthException e = (FirebaseAuthException)task.getException();
+                            Toast.makeText(MainActivity.this, "Authentication failed." + e.getMessage(),
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }

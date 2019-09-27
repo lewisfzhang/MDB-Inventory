@@ -2,4 +2,10 @@
     <string name="app_name">MDB Inventory</string>
     <string name="create_account">Create Account</string>
     <string name="log_in">Log In</string>
+    <string name="upload">UPLOAD</string>
+    <string name="add">ADD</string>
+    <string name="cost">Cost</string>
+    <string name="description">Description</string>
+    <string name="suppliers">Suppliers</string>
+    <string name="show">SHOW</string>
 </resources>
