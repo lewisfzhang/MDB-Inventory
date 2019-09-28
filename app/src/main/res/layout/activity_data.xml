@@ -22,8 +22,8 @@
 
             <SearchView
                 android:id="@+id/search"
-                android:layout_width="322dp"
-                android:layout_height="match_parent"
+                android:layout_width="323dp"
+                android:layout_height="43dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/menuButton"
                 app:layout_constraintStart_toStartOf="parent"
@@ -171,8 +171,12 @@
         app:layout_constraintTop_toBottomOf="@+id/transactionMenu">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            tools:itemCount="3"
+            tools:listitem="@layout/row_view" />
     </androidx.cardview.widget.CardView>
 
 </LinearLayout>

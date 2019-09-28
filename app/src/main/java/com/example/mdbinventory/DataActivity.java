@@ -1,14 +1,10 @@
 package com.example.mdbinventory;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +12,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,6 +29,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class DataActivity extends AppCompatActivity {
@@ -43,6 +45,11 @@ public class DataActivity extends AppCompatActivity {
     //Firebase
     FirebaseStorage storage;
     StorageReference storageReference;
+
+    // recycler stuff
+    RecyclerView recycler;
+    RecyclerView.LayoutManager linearManager;
+    RecyclerView.Adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +84,18 @@ public class DataActivity extends AppCompatActivity {
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+
+        ArrayList<Transaction> data = new ArrayList<>();
+        for (int i=0; i<10; i++) { // fill in tester data
+            data.add(new Transaction((float) 5.0, "description", "suppliers", "image_link", "date"));
+        }
+
+        // Setting up the RecyclerView
+        recycler = findViewById(R.id.recycler);
+        linearManager = new LinearLayoutManager(this);
+        recycler.setLayoutManager(linearManager); // default layout is linear
+        adapter = new Adapter(this, data);
+        recycler.setAdapter(adapter);
     }
 
     private void chooseImage() {
@@ -154,7 +173,7 @@ public class DataActivity extends AppCompatActivity {
 
                                 //this is the download url for the image -- save it with the Transaction object so that we can later display the image again
                                 String downloadUrl = task.getResult().toString();
-
+                                Log.d("t", downloadUrl);
                                 //this is also where all the uploading for the transaction object should happen, so that it automatically occurs right after the
                                 //image is uploaded and the link is stored in the downloadUrl variable
                             }
