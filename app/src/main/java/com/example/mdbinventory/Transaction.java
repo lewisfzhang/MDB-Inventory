@@ -8,8 +8,8 @@ public class Transaction {
     float cost;
     String description;
     String suppliers;
-    private String date;
-    private String url; // a link to the image
+    String date;
+    String url; // a link to the image
 
     public static final String COST = "cost", DESCRIPTION = "description", SUPPLIERS = "suppliers", DATE = "date", URL = "url";
 

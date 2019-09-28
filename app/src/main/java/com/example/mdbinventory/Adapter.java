@@ -1,6 +1,7 @@
 package com.example.mdbinventory;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,26 +84,26 @@ public class Adapter extends RecyclerView.Adapter<Adapter.CustomViewHolder> {
 
     // This describes the item view and meta data about its place within the recycler view, think of this as looking at one row and linking the relevant stuff from xml
     class CustomViewHolder extends RecyclerView.ViewHolder {
-        TextView name;
+        TextView supplier;
+        TextView date;
         ImageView image;
 
         CustomViewHolder(@NonNull View itemView) {
             super(itemView);
-//            name = itemView.findViewById(R.id.poke_name);
-//            image = itemView.findViewById(R.id.poke_image);
+            supplier = itemView.findViewById(R.id.supplier_text);
+            date = itemView.findViewById(R.id.date_text);
+            image = itemView.findViewById(R.id.transaction_image);
             itemView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
-//                    Intent intent = new Intent(context, PokeInfo.class);
-//
-//                    MainActivity mainActivity = ((MainActivity) context);
-//                    int idx = mainActivity.findIndexName(name.getText().toString());
-//                    if (idx == -1) Log.d("e", "index should not be -1");
-//
-//                    Pokemon p = mainActivity.list.get(idx);
-//                    intent.putExtra("name", p.name);
-//                    intent.putExtra("number", p.number);
+                    Intent intent = new Intent(context, Transaction_Info.class);
+
+                    DataActivity dataActivity = ((DataActivity) context);
+                    Transaction t = dataActivity.findTransaction(supplier.getText().toString(), date.getText().toString());
+
+//                    intent.putExtra("cost", data.get(0).cost);
+//                    intent.putExtra("description", data.desc);
 //                    intent.putExtra("attack", p.attack);
 //                    intent.putExtra("defense", p.defense);
 //                    intent.putExtra("flavorText", p.flavorText);
@@ -114,7 +115,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.CustomViewHolder> {
 //                    intent.putExtra("total", p.total);
 //                    intent.putExtra("type", p.type.toString());
 
-//                    context.startActivity(intent);
+                    context.startActivity(intent);
 
                 }
             });

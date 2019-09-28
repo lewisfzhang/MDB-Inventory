@@ -51,6 +51,8 @@ public class DataActivity extends AppCompatActivity {
     RecyclerView.LayoutManager linearManager;
     RecyclerView.Adapter adapter;
 
+    ArrayList<Transaction> data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,9 +87,9 @@ public class DataActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        ArrayList<Transaction> data = new ArrayList<>();
+        data = new ArrayList<>();
         for (int i=0; i<10; i++) { // fill in tester data
-            data.add(new Transaction((float) 5.0, "description", "suppliers", "image_link", "date"));
+            data.add(new Transaction((float) 5.0, "description"+i, "suppliers"+i, "image_link"+i, "date"+i));
         }
 
         // Setting up the RecyclerView
@@ -96,6 +98,16 @@ public class DataActivity extends AppCompatActivity {
         recycler.setLayoutManager(linearManager); // default layout is linear
         adapter = new Adapter(this, data);
         recycler.setAdapter(adapter);
+    }
+
+    public Transaction findTransaction(String supplier, String date) {
+        for (Transaction t : data) {
+            if (t.suppliers.equals(supplier) && t.date.equals(date)) {
+                return t;
+            }
+        }
+        Log.d("ERROR:","TRANSACTION NOT IN DATA LIST");
+        return null;
     }
 
     private void chooseImage() {
