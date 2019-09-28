@@ -136,7 +136,7 @@ public class DataActivity extends AppCompatActivity {
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                             double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
                                     .getTotalByteCount());
-                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                            progressDialog.setMessage("Uploaded "+ (int) progress+"%");
                         }
                     })
                     .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
