@@ -46,7 +46,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/transactionMenu"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="300dp"
         app:layout_constraintBottom_toTopOf="@+id/recyclerCard"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,8 +61,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:text="@string/cost"
                 app:layout_constraintBottom_toTopOf="@+id/descView"
                 app:layout_constraintStart_toStartOf="parent"
@@ -85,10 +85,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:text="@string/suppliers"
-                app:layout_constraintBottom_toTopOf="@+id/imageButton"
+                app:layout_constraintBottom_toTopOf="@+id/textView"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/descView" />
 
@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:autofillHints=""
                 android:ems="10"
-                android:hint="Enter a number"
+                android:hint="@string/enter_a_number"
                 android:inputType="numberDecimal"
                 app:layout_constraintBottom_toTopOf="@+id/description"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -109,7 +109,7 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="Enter a description"
+                android:hint="@string/enter_a_description"
                 android:inputType="textPersonName"
                 app:layout_constraintBottom_toTopOf="@+id/suppliers"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -120,42 +120,66 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="List the suppliers"
+                android:hint="@string/list_the_suppliers"
                 android:inputType="textPersonName"
-                app:layout_constraintBottom_toTopOf="@+id/imageButton"
+                app:layout_constraintBottom_toTopOf="@+id/editText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/description" />
 
             <Button
                 android:id="@+id/upload"
-                android:layout_width="200dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:text="@string/upload"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imageView"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageButton" />
 
             <Button
                 android:id="@+id/imageButton"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="CHOOSE IMAGE"
+                android:layout_width="300dp"
+                android:layout_height="48dp"
+                android:text="@string/choose_image"
                 app:layout_constraintBottom_toTopOf="@+id/upload"
+                app:layout_constraintEnd_toStartOf="@+id/imageView"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/suppliers" />
+                app:layout_constraintTop_toBottomOf="@+id/editText" />
 
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
                 android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/upload"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/upload"
-                app:layout_constraintTop_toBottomOf="@+id/suppliers"
+                app:layout_constraintTop_toTopOf="@+id/imageButton"
                 app:srcCompat="@android:drawable/sym_def_app_icon" />
+
+            <EditText
+                android:id="@+id/editText"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:ems="10"
+                android:hint="@string/enter_a_date"
+                android:inputType="date"
+                app:layout_constraintBottom_toTopOf="@+id/imageButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/suppliers" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/date"
+                app:layout_constraintBottom_toTopOf="@+id/imageButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/supplierView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
