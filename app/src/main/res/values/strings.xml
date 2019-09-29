@@ -14,4 +14,15 @@
     <string name="date">Date</string>
     <string name="choose_image">CHOOSE IMAGE</string>
     <string name="enter_a_description">Enter a description</string>
+    <string name="delete">DELETE</string>
+    <string name="transaction_info">Transaction Info</string>
+    <string name="cost_0">Cost: 0</string>
+    <string name="date_0">Date: 0</string>
+    <string name="supplier_0">Supplier: 0</string>
+    <string name="description_0">Description: 0</string>
+    <string name="supplier">SUPPLIER</string>
+    <string name="todo">TODO</string>
+    <string name="back">BACK</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
 </resources>

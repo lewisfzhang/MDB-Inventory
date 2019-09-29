@@ -50,7 +50,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.CustomViewHolder> {
         customViewHolder.supplier.setText(data.get(i).suppliers);
         customViewHolder.date.setText(data.get(i).date);
 
-        String url = "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png";
+        String url = data.get(i).url;
         ImageView itemView = customViewHolder.image;
         Glide.with(itemView)  //2
                 .load(url) //3
@@ -72,7 +72,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.CustomViewHolder> {
         TextView supplier;
         TextView date;
         ImageView image;
-
         CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             supplier = itemView.findViewById(R.id.supplier_text);
@@ -92,10 +91,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.CustomViewHolder> {
                     intent.putExtra("date", t.date);
 
                     // CHANGE WHEN EVERYTHING WORKS!
-                    String url = "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png";
+                    String url = t.url;
                     intent.putExtra("url", url);
+                    intent.putExtra("key", t.key);
 
-                    context.startActivity(intent);
+                    ((DataActivity) context).startActivityForResult(intent, DataActivity.DELETE_TRANSACTION);
 
                 }
             });

@@ -11,14 +11,16 @@ public class Transaction implements Comparable<Transaction> {
     String suppliers;
     String date;
     String url; // a link to the image
+    String key;
 
-    public static final String COST = "cost", DESCRIPTION = "description", SUPPLIERS = "suppliers", DATE = "date", URL = "url";
+    public static final String KEY = "key", COST = "cost", DESCRIPTION = "description", SUPPLIERS = "suppliers", DATE = "date", URL = "url";
 
     public Transaction() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public Transaction(String cost, String description, String suppliers, String date, String url) {
+    public Transaction(String key, String cost, String description, String suppliers, String date, String url) {
+        this.key = key;
         this.cost = cost;
         this.description = description;
         this.suppliers = suppliers;
@@ -28,6 +30,7 @@ public class Transaction implements Comparable<Transaction> {
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
+        result.put(KEY, key);
         result.put(COST, cost + "");
         result.put(DESCRIPTION, description);
         result.put(SUPPLIERS, suppliers);
@@ -38,6 +41,7 @@ public class Transaction implements Comparable<Transaction> {
 
     public static Transaction toTransaction(Map<String, Object> map) {
         return new Transaction(
+                (String) map.get(KEY),
                 (String) map.get(COST),
                 (String) map.get(DESCRIPTION),
                 (String) map.get(SUPPLIERS),

@@ -39,6 +39,7 @@ import java.util.UUID;
 
 public class DataActivity extends AppCompatActivity {
 
+    public static final int DELETE_TRANSACTION = 123;
     private EditText cost, description, suppliers, dateText;
     private EditText[] textArr;
     private Button upload, chooseImage, show;
@@ -139,7 +140,9 @@ public class DataActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        adapter.updateData(DataManagement.readSnapshot(dataSnapshot));
+                        data = DataManagement.readSnapshot(dataSnapshot);
+
+                        adapter.updateData(data);
                     }
 
                     @Override
@@ -244,7 +247,18 @@ public class DataActivity extends AppCompatActivity {
             {
                 e.printStackTrace();
             }
+        } else if (requestCode == DELETE_TRANSACTION && resultCode == RESULT_OK) {
+            DataManagement.delete(data.getStringExtra("key"), databaseReference);
         }
+    }
+
+
+    private void clear() {
+        cost.setText("");
+        description.setText("");
+        suppliers.setText("");
+        dateText.setText("");
+        imageView.setImageResource(R.drawable.transaction);
     }
 
     /**
@@ -299,7 +313,7 @@ public class DataActivity extends AppCompatActivity {
                                 String downloadUrl = task.getResult().toString();
 
                                 Transaction currTransaction =
-                                        new Transaction(cost.getText().toString(), description.getText().toString(),
+                                        new Transaction(DataManagement.getKey(databaseReference), cost.getText().toString(), description.getText().toString(),
                                                 suppliers.getText().toString(), dateText.getText().toString(), downloadUrl);
 
                                 DataManagement.writeNewTransaction(currTransaction, FirebaseDatabase.getInstance().getReference());

@@ -10,11 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 public class DataManagement {
+
+    public static String getKey(DatabaseReference database) {
+        return database.child("transactions").push().getKey();
+    }
+
     public static void writeNewTransaction(Transaction transaction, DatabaseReference database) {
-        String key = database.child("transactions").push().getKey();
         Map<String, Object> transactionValues = transaction.toMap();
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/transactions/" + key, transactionValues);
+        childUpdates.put("/transactions/" + transaction.key, transactionValues);
         database.updateChildren(childUpdates);
     }
 
@@ -34,5 +38,9 @@ public class DataManagement {
         Collections.sort(newData);
 
         return newData;
+    }
+
+    public static void delete(String transactionKey, DatabaseReference database) {
+        database.child(transactionKey).removeValue();
     }
 }

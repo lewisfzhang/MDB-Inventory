@@ -1,5 +1,6 @@
 package com.example.mdbinventory;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,7 @@ public class Transaction_Info extends AppCompatActivity {
         String description = getIntent().getStringExtra("description");
         String suppliers = getIntent().getStringExtra("supplier");
         String date = getIntent().getStringExtra("date");
+        final String key = getIntent().getStringExtra("key");
 
         ((TextView) findViewById(R.id.cost_info)).setText("Cost: "+cost);
         ((TextView) findViewById(R.id.description_info)).setText(description);
@@ -37,8 +39,19 @@ public class Transaction_Info extends AppCompatActivity {
                 .fallback(R.mipmap.ic_launcher) //7
                 .into(itemView); //8
 
-        Button back = findViewById(R.id.info_back);
-        back.setOnClickListener(new View.OnClickListener() {
+        final Intent data = new Intent();
+
+        findViewById(R.id.delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                data.putExtra("key", key);
+                setResult(RESULT_OK, data);
+                finish();
+
+            }
+        });
+
+        findViewById(R.id.backButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
