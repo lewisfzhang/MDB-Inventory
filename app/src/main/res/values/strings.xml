@@ -7,13 +7,21 @@
     <string name="cost">Cost ($)</string>
     <string name="description">Description</string>
     <string name="suppliers">Suppliers</string>
+
     <string name="show">SHOW</string>
+    <string name="hide">HIDE</string>
+
     <string name="enter_a_number">Enter a number</string>
     <string name="list_the_suppliers">List the suppliers</string>
     <string name="enter_a_date">Enter a date</string>
     <string name="date">Date</string>
     <string name="choose_image">CHOOSE IMAGE</string>
     <string name="enter_a_description">Enter a description</string>
+
+    <string-array name="order_options">
+        <item>Old -> New</item>
+        <item>New -> Old</item>
+    </string-array>
     <string name="delete">DELETE</string>
     <string name="transaction_info">Transaction Info</string>
     <string name="cost_0">Cost: 0</string>
@@ -23,6 +31,6 @@
     <string name="supplier">SUPPLIER</string>
     <string name="todo">TODO</string>
     <string name="back">BACK</string>
-    <string name="email">email</string>
+    <string name="email">kanyes@mdb.dev</string>
     <string name="password">password</string>
 </resources>

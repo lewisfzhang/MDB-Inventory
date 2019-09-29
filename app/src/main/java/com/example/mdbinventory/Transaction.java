@@ -1,6 +1,5 @@
 package com.example.mdbinventory;
 
-import java.awt.font.TextAttribute;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,6 +59,6 @@ public class Transaction implements Comparable<Transaction> {
         int month = Integer.parseInt(date.substring(0, 2));
         int day = Integer.parseInt(date.substring(3, 5));
         int year = Integer.parseInt(date.substring(date.length() - 4));
-        return (int) (Math.pow(10, 6) * month + Math.pow(10, 4) * day + year);
+        return (int) (Math.pow(10, 4) * year + Math.pow(10, 2) * month + day);
     }
 }

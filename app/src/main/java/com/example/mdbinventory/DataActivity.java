@@ -8,13 +8,18 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,16 +39,22 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
-public class DataActivity extends AppCompatActivity {
+public class DataActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final int DELETE_TRANSACTION = 123;
     private EditText cost, description, suppliers, dateText;
     private EditText[] textArr;
-    private Button upload, chooseImage, show;
+    private Button upload, chooseImage, show, logout;
     private ImageView imageView;
+    CardView entryMenu, entryBody;
+    AutoCompleteTextView search;
+    Spinner toggle_order;
 
     private final int PICK_IMAGE_REQUEST = 71;
 
@@ -61,41 +72,35 @@ public class DataActivity extends AppCompatActivity {
     Adapter adapter;
 
     List<Transaction> data;
+    ArrayList<String> description_list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
 
+        show = findViewById(R.id.menuButton);
         cost = findViewById(R.id.cost);
         description = findViewById(R.id.description);
         suppliers = findViewById(R.id.supplier);
         dateText = findViewById(R.id.date);
-
         imageView = findViewById(R.id.imageView);
-        imageView.setImageResource(R.drawable.transaction);
-
         upload = findViewById(R.id.upload);
-
-        upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (checkValidity()) {
-                    uploadData();
-                }
-            }
-        });
-
         chooseImage = findViewById(R.id.imageButton);
+        entryMenu = findViewById(R.id.entry_title);
+        entryBody = findViewById(R.id.transactionMenu);
+        search = findViewById(R.id.search);
+        logout = findViewById(R.id.logout);
+        toggle_order = findViewById(R.id.date_spinner);
 
-        chooseImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                chooseImage();
-            }
-        });
+        upload.setOnClickListener(this);
+        chooseImage.setOnClickListener(this);
+        show.setOnClickListener(this);
+        logout.setOnClickListener(this);
+        toggle_entry(false); // hide entry
 
-        show = findViewById(R.id.menuButton);
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -107,23 +112,83 @@ public class DataActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 data = DataManagement.readSnapshot(dataSnapshot);
                 setUpRecyclerView();
+                Collections.sort(data);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-
-
         initFireBaseDataChange();
 
-        /*
-        data = new ArrayList<>();
-        for (int i=0; i<10; i++) { // fill in tester data
-            String date = String.format("01/0%s/1999", 9-i);
-            data.add(new Transaction("" + 5.0, "description"+i, "suppliers"+i, "image_link"+i, date));
+        search.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Object o = adapterView.getItemAtPosition(i);
+                if (o instanceof String) {
+                    // go to next fragment
+                    String target_description = (String) o;
+                    Log.d("i", target_description);
+
+                    int idx = -1;
+                    for (int x=0; x<description_list.size(); x++) {
+                        if (description_list.get(x).equals(target_description)) {
+                            idx = x;
+                            break;
+                        }
+                    }
+                    if (idx == -1) Log.d("e", "index should not be -1");
+
+                    Transaction t = data.get(idx);
+                    Intent intent = new Intent(DataActivity.this, Transaction_Info.class);
+                    intent.putExtra("cost", t.cost);
+                    intent.putExtra("description", t.description);
+                    intent.putExtra("supplier", t.suppliers);
+                    intent.putExtra("date", t.date);
+                    intent.putExtra("url", t.url);
+
+                    search.setText("");
+                    startActivity(intent);
+                } else {
+                    Log.d("i", "Error: Unable to select item");
+                }
+            }
+        });
+        search.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                toggle_entry(true);
+            }
+        });
+        toggle_order.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (data != null) {
+                    reverseOrder();
+                }
+            }
+
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.imageButton:
+                chooseImage();
+                break;
+            case R.id.upload:
+                if (checkValidity()) {
+                    uploadData();
+                }
+                break;
+            case R.id.menuButton:
+                toggle_entry(false);
+                break;
+            case R.id.logout:
+                finish();
+                break;
         }
-        Collections.sort(data);
-         */
     }
 
     private void setUpRecyclerView() {
@@ -134,23 +199,56 @@ public class DataActivity extends AppCompatActivity {
         recycler.setAdapter(adapter);
     }
 
+    void resetDescriptionList() {
+        description_list = new ArrayList<>();
+        for (Transaction t : data) {
+            description_list.add(t.description);
+        }
+    }
+
+    void resort_description_list() {
+        Collections.sort(description_list, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                return s1.compareToIgnoreCase(s2);
+            }
+        });
+    }
+
+    void reverseOrder() {
+        Collections.reverse(data);
+        adapter.updateData(data);
+    }
+
+    void toggle_entry(boolean keep_hidden) {
+        if (keep_hidden || entryBody.getVisibility() == View.VISIBLE) { // hide it
+            show.setText(R.string.show);
+            entryBody.setVisibility(View.GONE);
+        } else { // show it
+            show.setText(R.string.hide);
+            entryBody.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void initFireBaseDataChange() {
-        databaseReference
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                data = DataManagement.readSnapshot(dataSnapshot);
+                adapter.updateData(data);
+                resetDescriptionList();
+                resort_description_list();
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(DataActivity.this, android.R.layout.simple_dropdown_item_1line, description_list);
+                search.setAdapter(arrayAdapter);
+                arrayAdapter.notifyDataSetChanged();
+            }
 
-                        data = DataManagement.readSnapshot(dataSnapshot);
-
-                        adapter.updateData(data);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        // Failed to read value
-                        Log.w(MainActivity.TAG, "Failed to read value.", error.toException());
-                    }
-                });
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(MainActivity.TAG, "Failed to read value.", error.toException());
+            }
+        });
     }
 
     public static boolean isEmpty(EditText text) {
@@ -178,7 +276,9 @@ public class DataActivity extends AppCompatActivity {
 
         int month = Integer.parseInt(date.substring(0, 2));
         int day = Integer.parseInt(date.substring(3, 5));
-        int days[] = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};        // final check to see if month and days are in valid ranges
+        int days[] = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+        // final check to see if month and days are in valid ranges
         return (month > 0 && month < 13) && (day > 0 && day <= days[month]);
     }
 
@@ -317,6 +417,7 @@ public class DataActivity extends AppCompatActivity {
                                                 suppliers.getText().toString(), dateText.getText().toString(), downloadUrl);
 
                                 DataManagement.writeNewTransaction(currTransaction, FirebaseDatabase.getInstance().getReference());
+                                clear();
                             }
                         }
                     }
