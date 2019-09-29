@@ -111,18 +111,18 @@
                 android:ems="10"
                 android:hint="@string/enter_a_description"
                 android:inputType="textPersonName"
-                app:layout_constraintBottom_toTopOf="@+id/suppliers"
+                app:layout_constraintBottom_toTopOf="@+id/supplier"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cost" />
 
             <EditText
-                android:id="@+id/suppliers"
+                android:id="@+id/supplier"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="@string/list_the_suppliers"
                 android:inputType="textPersonName"
-                app:layout_constraintBottom_toTopOf="@+id/editText"
+                app:layout_constraintBottom_toTopOf="@+id/date"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/description" />
 
@@ -144,7 +144,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/upload"
                 app:layout_constraintEnd_toStartOf="@+id/imageView"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editText" />
+                app:layout_constraintTop_toBottomOf="@+id/date" />
 
             <ImageView
                 android:id="@+id/imageView"
@@ -158,7 +158,7 @@
                 app:srcCompat="@android:drawable/sym_def_app_icon" />
 
             <EditText
-                android:id="@+id/editText"
+                android:id="@+id/date"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -167,7 +167,7 @@
                 android:inputType="date"
                 app:layout_constraintBottom_toTopOf="@+id/imageButton"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/suppliers" />
+                app:layout_constraintTop_toBottomOf="@+id/supplier" />
 
             <TextView
                 android:id="@+id/textView"

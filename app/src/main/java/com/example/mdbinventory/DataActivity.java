@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -34,7 +35,8 @@ import java.util.UUID;
 
 public class DataActivity extends AppCompatActivity {
 
-    private EditText cost, description, suppliers;
+    private EditText cost, description, suppliers, dateText;
+    private EditText[] textArr;
     private Button upload, chooseImage, show;
     private ImageView imageView;
 
@@ -60,16 +62,20 @@ public class DataActivity extends AppCompatActivity {
 
         cost = findViewById(R.id.cost);
         description = findViewById(R.id.description);
-        suppliers = findViewById(R.id.suppliers);
+        suppliers = findViewById(R.id.supplier);
+        dateText = findViewById(R.id.date);
 
         imageView = findViewById(R.id.imageView);
+        imageView.setImageResource(R.drawable.transaction);
 
         upload = findViewById(R.id.upload);
 
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                uploadData();
+                if (checkValidity()) {
+                    uploadData();
+                }
             }
         });
 
@@ -98,6 +104,64 @@ public class DataActivity extends AppCompatActivity {
         recycler.setLayoutManager(linearManager); // default layout is linear
         adapter = new Adapter(this, data);
         recycler.setAdapter(adapter);
+    }
+
+    private static boolean isEmpty(EditText text) {
+        return text.getText().toString().trim().isEmpty();
+    }
+
+    /**
+     * Checks if date is formated like mm/dd/yyyy
+     */
+    private static boolean isDateFormatted(String date) {
+        if (date.length() == 10) {
+            for (int i = 0; i < date.length(); i++) {
+                if (i == 2 || i == 5) {
+                    if (date.charAt(i) != '/') {
+                        return false;
+                    } else if (!Character.isDigit(date.charAt(i))) {
+                        return false;
+                    }
+                }
+            }
+        } else {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    private boolean checkValidity() {
+
+        boolean returnVal = true;
+
+        if (isEmpty(cost)) {
+            cost.setError("Must enter a cost");
+            return false;
+        }
+
+        if (isEmpty(suppliers)) {
+            suppliers.setError("Must enter a supplier");
+            return false;
+        }
+
+        if (isEmpty(description)) {
+            description.setError("Must enter a description");
+            return false;
+        }
+
+        if (isEmpty(dateText)) {
+            dateText.setError("Must enter a date");
+            return false;
+        }
+
+        if (!isDateFormatted(dateText.getText().toString())) {
+            dateText.setError("Enter a date as mm/dd/yyyy");
+            return false;
+        }
+
+        return true;
     }
 
     public Transaction findTransaction(String supplier, String date) {
@@ -185,9 +249,12 @@ public class DataActivity extends AppCompatActivity {
 
                                 //this is the download url for the image -- save it with the Transaction object so that we can later display the image again
                                 String downloadUrl = task.getResult().toString();
-                                Log.d("t", downloadUrl);
-                                //this is also where all the uploading for the transaction object should happen, so that it automatically occurs right after the
-                                //image is uploaded and the link is stored in the downloadUrl variable
+
+                                Transaction currTransaction =
+                                        new Transaction(Float.parseFloat(cost.getText().toString()), description.getText().toString(),
+                                                suppliers.getText().toString(), dateText.getText().toString(), downloadUrl);
+
+                                DataManagement.writeNewTransaction(currTransaction, FirebaseDatabase.getInstance().getReference());
                             }
                         }
                     }
