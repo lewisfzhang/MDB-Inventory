@@ -30,7 +30,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 
 public class DataActivity extends AppCompatActivity {
@@ -95,8 +98,10 @@ public class DataActivity extends AppCompatActivity {
 
         data = new ArrayList<>();
         for (int i=0; i<10; i++) { // fill in tester data
-            data.add(new Transaction((float) 5.0, "description"+i, "suppliers"+i, "image_link"+i, "date"+i));
+            String date = String.format("01/0%s/1999", 9-i);
+            data.add(new Transaction((float) 5.0, "description"+i, "suppliers"+i, "image_link"+i, date));
         }
+        Collections.sort(data);
 
         // Setting up the RecyclerView
         recycler = findViewById(R.id.recycler);
@@ -114,6 +119,7 @@ public class DataActivity extends AppCompatActivity {
      * Checks if date is formated like mm/dd/yyyy
      */
     private static boolean isDateFormatted(String date) {
+        // check if the format is ##/##/####
         if (date.length() == 10) {
             for (int i = 0; i < date.length(); i++) {
                 if (i == 2 || i == 5) {
@@ -125,6 +131,14 @@ public class DataActivity extends AppCompatActivity {
                 }
             }
         } else {
+            return false;
+        }
+
+        date = date.replace("/", "-");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        try {
+            simpleDateFormat.parse(date);
+        } catch (ParseException e) {
             return false;
         }
 
