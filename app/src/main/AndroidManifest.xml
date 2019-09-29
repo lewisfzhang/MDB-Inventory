@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".transaction_info"></activity>
+        <activity android:name=".Transaction_Info"></activity>
         <activity android:name=".DataActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

@@ -119,9 +119,9 @@ public class DataActivity extends AppCompatActivity {
                 if (i == 2 || i == 5) {
                     if (date.charAt(i) != '/') {
                         return false;
-                    } else if (!Character.isDigit(date.charAt(i))) {
-                        return false;
                     }
+                } else if (!Character.isDigit(date.charAt(i))) {
+                    return false;
                 }
             }
         } else {

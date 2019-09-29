@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,35 +47,18 @@ public class Adapter extends RecyclerView.Adapter<Adapter.CustomViewHolder> {
     // Updates the `RecyclerView.ViewHolder` contents with the item at the given position (from your data)
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder customViewHolder, int i) {
-//        String[] parts = data.get(i).name.split(" ");
-        // customViewHolder.name.setText(limitTextWidth(parts));
-//        customViewHolder.name.setText(data.get(i).name);
+        customViewHolder.supplier.setText(data.get(i).suppliers);
+        customViewHolder.date.setText(data.get(i).date);
 
-//        String query = parts[0];
-//        if (parts.length > 1 && parts[1].equals("(")) query = String.format("%s-%s", query, parts[2]);
-//        String url = String.format("http://img.pokemondb.net/artwork/%s.jpg",query).toLowerCase();
-//        ImageView itemView = customViewHolder.image;
-//        Glide.with(itemView)  //2
-//                .load(url) //3
-//                .centerCrop() //4
-//                .placeholder(R.drawable.pokeball) //5
-//                .error(R.drawable.pokeball) //6
-//                .fallback(R.drawable.pokeball) //7
-//                .into(itemView); //8
-    }
-
-    private String limitTextWidth(String[] parts) {
-        StringBuilder s = new StringBuilder();
-        int count = 0;
-        for (int i=0; i<parts.length; i++) {
-            s.append(parts[i]).append(" ");
-            count += parts[i].length();
-            if (!(i + 1 < parts.length && parts[i].equals(")")) && count >= 10) { // limit text width to 10
-                s.append(System.lineSeparator());
-                count = 0;
-            }
-        }
-        return s.toString();
+        String url = "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png";
+        ImageView itemView = customViewHolder.image;
+        Glide.with(itemView)  //2
+                .load(url) //3
+                .centerCrop() //4
+                .placeholder(R.mipmap.ic_launcher) //5
+                .error(R.mipmap.ic_launcher) //6
+                .fallback(R.mipmap.ic_launcher) //7
+                .into(itemView); //8
     }
 
     // Must be overriden to explicitly tell your Recycler how much data to allocate space for (number of rows)
@@ -97,23 +82,18 @@ public class Adapter extends RecyclerView.Adapter<Adapter.CustomViewHolder> {
 
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, Transaction_Info.class);
-
                     DataActivity dataActivity = ((DataActivity) context);
                     Transaction t = dataActivity.findTransaction(supplier.getText().toString(), date.getText().toString());
 
-//                    intent.putExtra("cost", data.get(0).cost);
-//                    intent.putExtra("description", data.desc);
-//                    intent.putExtra("attack", p.attack);
-//                    intent.putExtra("defense", p.defense);
-//                    intent.putExtra("flavorText", p.flavorText);
-//                    intent.putExtra("hp", p.hp);
-//                    intent.putExtra("sp_atk", p.sp_atk);
-//                    intent.putExtra("sp_def", p.sp_def);
-//                    intent.putExtra("species", p.species);
-//                    intent.putExtra("speed", p.speed);
-//                    intent.putExtra("total", p.total);
-//                    intent.putExtra("type", p.type.toString());
+                    Intent intent = new Intent(context, Transaction_Info.class);
+                    intent.putExtra("cost", t.cost);
+                    intent.putExtra("description", t.description);
+                    intent.putExtra("supplier", t.suppliers);
+                    intent.putExtra("date", t.date);
+
+                    // CHANGE WHEN EVERYTHING WORKS!
+                    String url = "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png";
+                    intent.putExtra("url", url);
 
                     context.startActivity(intent);
 

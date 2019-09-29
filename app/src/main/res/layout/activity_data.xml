@@ -164,7 +164,7 @@
                 android:layout_marginBottom="8dp"
                 android:ems="10"
                 android:hint="@string/enter_a_date"
-                android:inputType="date"
+                android:inputType="date|phone"
                 app:layout_constraintBottom_toTopOf="@+id/imageButton"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/supplier" />
