@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (!DataActivity.isEmpty(email) && !DataActivity.isEmpty(password)) {
+                    dataIntent.putExtra("email", email.getText().toString());
                     createAccount(email.getText().toString(), password.getText().toString());
                 }
             }
@@ -56,13 +57,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (!DataActivity.isEmpty(email) && !DataActivity.isEmpty(password)) {
+                    dataIntent.putExtra("email", email.getText().toString());
                     signIn(email.getText().toString(), password.getText().toString());
                 }
             }
         });
     }
 
-    public void updateUI(FirebaseUser user) {}
+    public void updateUI(FirebaseUser user) {
+        email.setText("");
+        password.setText("");
+    }
 
     @Override
     public void onStart() {

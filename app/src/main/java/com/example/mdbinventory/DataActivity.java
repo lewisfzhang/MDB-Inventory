@@ -2,6 +2,7 @@ package com.example.mdbinventory;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -65,6 +66,7 @@ public class DataActivity extends AppCompatActivity implements View.OnClickListe
     StorageReference storageReference;
     FirebaseDatabase database;
     DatabaseReference databaseReference;
+    SharedPreferences sharedPref;
 
     // recycler stuff
     RecyclerView recycler;
@@ -113,12 +115,20 @@ public class DataActivity extends AppCompatActivity implements View.OnClickListe
                 data = DataManagement.readSnapshot(dataSnapshot);
                 setUpRecyclerView();
                 Collections.sort(data);
+                resetDescriptionList();
+                resort_description_list();
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
         initFireBaseDataChange();
+
+        sharedPref = getPreferences(MODE_PRIVATE);
+        Log.d("h", getIntent().getStringExtra("email"));
+        Log.d("hi", "asldjfka;lsdjf");
+        String last_search = sharedPref.getString(getIntent().getStringExtra("email"), "");
+        if (!last_search.isEmpty()) search.setText(last_search);
 
         search.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -129,6 +139,7 @@ public class DataActivity extends AppCompatActivity implements View.OnClickListe
                     String target_description = (String) o;
                     Log.d("i", target_description);
 
+                    resetDescriptionList(); // to match indices of data
                     int idx = -1;
                     for (int x=0; x<description_list.size(); x++) {
                         if (description_list.get(x).equals(target_description)) {
@@ -137,6 +148,7 @@ public class DataActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     }
                     if (idx == -1) Log.d("e", "index should not be -1");
+                    resort_description_list(); // to reset alphabetically
 
                     Transaction t = data.get(idx);
                     Intent intent = new Intent(DataActivity.this, Transaction_Info.class);
@@ -146,7 +158,12 @@ public class DataActivity extends AppCompatActivity implements View.OnClickListe
                     intent.putExtra("date", t.date);
                     intent.putExtra("url", t.url);
 
-                    search.setText("");
+                    sharedPref = getPreferences(MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString(getIntent().getStringExtra("email"), t.description);
+                    editor.commit();
+
+                    // search.setText("");
                     startActivity(intent);
                 } else {
                     Log.d("i", "Error: Unable to select item");

@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Transaction implements Comparable<Transaction> {
 
-    String cost;
+    float cost;
     String description;
     String suppliers;
     String date;
@@ -20,7 +20,7 @@ public class Transaction implements Comparable<Transaction> {
 
     public Transaction(String key, String cost, String description, String suppliers, String date, String url) {
         this.key = key;
-        this.cost = cost;
+        this.cost = Float.parseFloat(cost);
         this.description = description;
         this.suppliers = suppliers;
         this.date = date;
