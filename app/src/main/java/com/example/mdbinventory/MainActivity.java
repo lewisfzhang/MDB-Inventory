@@ -46,14 +46,18 @@ public class MainActivity extends AppCompatActivity {
         createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createAccount(email.getText().toString(), password.getText().toString());
+                if (!DataActivity.isEmpty(email) && !DataActivity.isEmpty(password)) {
+                    createAccount(email.getText().toString(), password.getText().toString());
+                }
             }
         });
 
         logIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                signIn(email.getText().toString(), password.getText().toString());
+                if (!DataActivity.isEmpty(email) && !DataActivity.isEmpty(password)) {
+                    signIn(email.getText().toString(), password.getText().toString());
+                }
             }
         });
     }

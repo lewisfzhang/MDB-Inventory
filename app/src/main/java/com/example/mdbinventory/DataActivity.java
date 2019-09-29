@@ -23,17 +23,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 public class DataActivity extends AppCompatActivity {
@@ -50,13 +51,15 @@ public class DataActivity extends AppCompatActivity {
     //Firebase
     FirebaseStorage storage;
     StorageReference storageReference;
+    FirebaseDatabase database;
+    DatabaseReference databaseReference;
 
     // recycler stuff
     RecyclerView recycler;
     RecyclerView.LayoutManager linearManager;
-    RecyclerView.Adapter adapter;
+    Adapter adapter;
 
-    ArrayList<Transaction> data;
+    List<Transaction> data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,15 +98,34 @@ public class DataActivity extends AppCompatActivity {
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        database = FirebaseDatabase.getInstance();
+        databaseReference = database.getReference().child("transactions");
 
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                data = DataManagement.readSnapshot(dataSnapshot);
+                setUpRecyclerView();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+
+        initFireBaseDataChange();
+
+        /*
         data = new ArrayList<>();
         for (int i=0; i<10; i++) { // fill in tester data
             String date = String.format("01/0%s/1999", 9-i);
-            data.add(new Transaction((float) 5.0, "description"+i, "suppliers"+i, "image_link"+i, date));
+            data.add(new Transaction("" + 5.0, "description"+i, "suppliers"+i, "image_link"+i, date));
         }
         Collections.sort(data);
+         */
+    }
 
-        // Setting up the RecyclerView
+    private void setUpRecyclerView() {
         recycler = findViewById(R.id.recycler);
         linearManager = new LinearLayoutManager(this);
         recycler.setLayoutManager(linearManager); // default layout is linear
@@ -111,7 +133,24 @@ public class DataActivity extends AppCompatActivity {
         recycler.setAdapter(adapter);
     }
 
-    private static boolean isEmpty(EditText text) {
+    private void initFireBaseDataChange() {
+        databaseReference
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        adapter.updateData(DataManagement.readSnapshot(dataSnapshot));
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        // Failed to read value
+                        Log.w(MainActivity.TAG, "Failed to read value.", error.toException());
+                    }
+                });
+    }
+
+    public static boolean isEmpty(EditText text) {
         return text.getText().toString().trim().isEmpty();
     }
 
@@ -134,15 +173,10 @@ public class DataActivity extends AppCompatActivity {
             return false;
         }
 
-        date = date.replace("/", "-");
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
-        try {
-            simpleDateFormat.parse(date);
-        } catch (ParseException e) {
-            return false;
-        }
-
-        return true;
+        int month = Integer.parseInt(date.substring(0, 2));
+        int day = Integer.parseInt(date.substring(3, 5));
+        int days[] = {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};        // final check to see if month and days are in valid ranges
+        return (month > 0 && month < 13) && (day > 0 && day <= days[month]);
     }
 
 
@@ -152,30 +186,30 @@ public class DataActivity extends AppCompatActivity {
 
         if (isEmpty(cost)) {
             cost.setError("Must enter a cost");
-            return false;
+            returnVal = false;
         }
 
         if (isEmpty(suppliers)) {
             suppliers.setError("Must enter a supplier");
-            return false;
+            returnVal = false;
         }
 
         if (isEmpty(description)) {
             description.setError("Must enter a description");
-            return false;
+            returnVal = false;
         }
 
         if (isEmpty(dateText)) {
             dateText.setError("Must enter a date");
-            return false;
+            returnVal = false;
         }
 
         if (!isDateFormatted(dateText.getText().toString())) {
             dateText.setError("Enter a date as mm/dd/yyyy");
-            return false;
+            returnVal = false;
         }
 
-        return true;
+        return returnVal;
     }
 
     public Transaction findTransaction(String supplier, String date) {
@@ -265,7 +299,7 @@ public class DataActivity extends AppCompatActivity {
                                 String downloadUrl = task.getResult().toString();
 
                                 Transaction currTransaction =
-                                        new Transaction(Float.parseFloat(cost.getText().toString()), description.getText().toString(),
+                                        new Transaction(cost.getText().toString(), description.getText().toString(),
                                                 suppliers.getText().toString(), dateText.getText().toString(), downloadUrl);
 
                                 DataManagement.writeNewTransaction(currTransaction, FirebaseDatabase.getInstance().getReference());
@@ -274,7 +308,7 @@ public class DataActivity extends AppCompatActivity {
                     }
             );
         } else {
-            Toast.makeText(DataActivity.this, "Null Filepath", Toast.LENGTH_SHORT).show();
+            Toast.makeText(DataActivity.this, "Please Choose an Image", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -28,7 +28,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.CustomViewHolder> {
     boolean listView = true; // default
 
     // Adapter construtor, whenever we make a new adapter from this class we need to pass in a context and the data that we want to bind
-    Adapter(Context context, ArrayList<Transaction> data) {
+    Adapter(Context context, List<Transaction> data) {
         this.context = context;
         this.data = data;
     }
@@ -101,6 +101,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.CustomViewHolder> {
             });
         }
 
+    }
+
+    public synchronized void updateData(List<Transaction> newData) {
+        data = newData;
+        notifyDataSetChanged();
     }
 }
 

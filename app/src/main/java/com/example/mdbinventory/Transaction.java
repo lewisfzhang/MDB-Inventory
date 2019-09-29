@@ -1,11 +1,12 @@
 package com.example.mdbinventory;
 
+import java.awt.font.TextAttribute;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Transaction implements Comparable<Transaction> {
 
-    float cost;
+    String cost;
     String description;
     String suppliers;
     String date;
@@ -17,22 +18,32 @@ public class Transaction implements Comparable<Transaction> {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public Transaction(float cost, String description, String suppliers, String url, String date) {
+    public Transaction(String cost, String description, String suppliers, String date, String url) {
         this.cost = cost;
         this.description = description;
         this.suppliers = suppliers;
-        this.url = url;
         this.date = date;
+        this.url = url;
     }
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put(COST, cost);
+        result.put(COST, cost + "");
         result.put(DESCRIPTION, description);
         result.put(SUPPLIERS, suppliers);
         result.put(DATE, date);
         result.put(URL, url);
         return result;
+    }
+
+    public static Transaction toTransaction(Map<String, Object> map) {
+        return new Transaction(
+                (String) map.get(COST),
+                (String) map.get(DESCRIPTION),
+                (String) map.get(SUPPLIERS),
+                (String) map.get(DATE),
+                (String) map.get(URL)
+        );
     }
 
     @Override
